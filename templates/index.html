@@ -1,0 +1,321 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet"> 
+<link rel="stylesheet" href="/static/style.css">
+<p class="price_current">BTCUSDT - {{btc_price['price']}} - {{btc_price['time']}}</p>
+<div class="container">
+  
+  <form method='post' action="{{ url_for('new_game') }}" id="survey-form">
+    <header class="header1">
+        <h1 id="title">
+          Nowa Partia
+        </h1>
+        
+      </header>
+
+      <div class="form-group">
+
+        <p>
+            Side
+        </p>
+      
+      <select 
+              name="side" 
+              id="dropdown"
+              class="form-control"
+              required>
+        
+        <option value="long" selected="selected">Long</option>
+        <option value="short">Short</option>
+        
+      </select>
+    </div>
+
+
+    <div class="form-group">
+        <p>
+            Price
+          </p>
+      <input 
+             type="number" 
+             id="price"
+             name="price"
+             class="form-control"
+             required 
+             
+             min="9000"
+             max="30000"
+             
+             placeholder="Avg Price"
+             >
+      
+    </div>
+    
+    <div class="form-group">
+
+        <p>
+            PAIR
+        </p>
+      
+      <select 
+              name="pair" 
+              id="dropdown"
+              class="form-control"
+              required>
+        
+        <option value="BTCUSDT" selected="selected">BTCUSDT</option>
+        <option value="ETHUSDT">ETHUSDT</option>
+        
+      </select>
+    </div>
+
+    <div class="form-group">
+
+        <p>
+            Size
+        </p>
+      
+      <select 
+              name="size" 
+              id="dropdown"
+              class="form-control"
+              required>
+
+        <option value="30" selected="selected">30</option>
+        <option value="40">40</option>
+        <option value="50">50</option>
+        
+      </select>
+    </div>
+
+    <div class="form-group">
+
+        <p>
+            Leverage X
+        </p>
+      
+      <select 
+              name="leverage" 
+              id="dropdown"
+              class="form-control"
+              required>
+
+        <option value="5" selected="selected">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        
+      </select>
+    </div>
+
+    <div class="form-group">
+
+        <p>
+            Grid orders
+        </p>
+      
+      <select 
+              name="grid_orders" 
+              id="dropdown"
+              class="form-control"
+              required>
+
+        <option value="3" selected="selected">3</option>
+        
+      </select>
+    </div>
+
+    <div class="form-group">
+
+        <p>
+            Grid width %
+        </p>
+      
+      <select 
+              name="grid%" 
+              id="dropdown"
+              class="form-control"
+              required>
+
+        <option value="1.2" selected="selected">1.2</option>
+        <option value="1.3">1.3</option>
+        <option value="1.4">1.4</option>
+        <option value="1.5">1.5</option>
+        <option value="1.6">1.6</option>
+        <option value="1.7">1.7</option>
+        <option value="1.8">1.8</option>
+        
+        
+      </select>
+    </div>
+
+    <div class="form-group">
+
+        <p>
+            SL%
+        </p>
+      
+      <select 
+              name="SL" 
+              id="dropdown"
+              class="form-control"
+              required>
+
+        <option value="1">1</option>
+        <option value="1.1" selected="selected">1.1</option>
+        <option value="1.2">1.2</option>
+        <option value="1.3">1.3</option>
+        <option value="1.4">1.4</option>
+        <option value="1.5">1.5</option>
+        <option value="1.6">1.6</option>
+        <option value="1.7">1.7</option>
+        <option value="1.8">1.8</option>
+        <option value="1.9">1.9</option>
+        <option value="2">2</option>
+        
+      </select>
+    </div>
+
+    <div class="form-group">
+
+        <p>
+            TP-ratio
+        </p>
+      
+      <select 
+              name="TP" 
+              id="dropdown"
+              class="form-control"
+              required>
+
+        <option value="1.5">1:1.5</option>
+        <option value="1.95" selected="selected">1:1.95</option>
+        <option value="2.4">1:2.4</option>
+        <option value="2.9">1:2.9</option>
+        
+      </select>
+    </div>
+    
+    
+    <div class="form-group">
+      <p>Comment to game</p>
+      <textarea 
+                name="comment" 
+                id="comments" 
+                class="form-control"
+               
+                placeholder="Comment"></textarea>
+                  
+               
+    </div>
+    
+    <div class="form-group">
+      <button 
+              type="submit"
+              id="submit"
+              class="btn btn-primary"
+              >Submit</button>
+    </div>
+    
+  </form>
+
+  <div id="waiting">
+    <header class="header1">
+        <h1 id="title1">
+          Oczekujące
+        </h1>
+        
+      </header>
+      {% for obj in waiting %}
+        <div class="waiting_order">
+          <p>{{obj['side']}}</p>
+          <p>{{obj['price']}}</p>
+          <p>{{obj['pair']}}</p>
+          <p>$ {{obj['size']}}</p>
+          <p>X {{obj['leverage']}}</p>
+          <p>tp {{obj['profit']}}</p>
+          <p>sl {{obj['stop']}}</p>
+          <p>{{obj['comment']}}</p>
+          <form method='post' action="{{ url_for('cancel_waiting_order') }}" id="cancel_waiting_order">
+            <button type="submit" name="orderID_internal" value="{{obj['side'],obj['price'],obj['pair']}}">Cancel</button>
+          </form>
+        </div>
+      {% endfor %}
+
+  </div>
+
+  <div id="active">
+    <header class="header1">
+        <h1 id="title2">
+          Aktywne
+        </h1>
+        
+      </header>
+
+      {% for obj in active %}
+        <div class="active_order">
+          <p>{{obj['side']}}</p>
+          <p>{{obj['price']}}</p>
+          <p>{{obj['pair']}}</p>
+          <p>$ {{obj['size']}}</p>
+          <p>X {{obj['leverage']}}</p>
+          <p>tp {{obj['profit']}}</p>
+          <p>sl {{obj['stop']}}</p>
+          <p>{{obj['comment']}}</p>
+        </div>
+      {% endfor %}
+
+  </div>
+
+
+  <div id="current_price">
+    <header class="header2">
+        <h1 id="title3">
+          Gra
+        </h1>
+        
+      </header>
+
+      <div class="current_price">
+        <p>BTCUSDT</p>
+        <p>{{btc_price['price']}}</p>
+        <p>{{btc_price['time']}}</p>
+        <p>Next run:</p>
+        <p>1.4m</p>
+        <p>activated 24h: 0</p>
+        <p>closed 24h: 0</p>
+        <form method='get' action="{{ url_for('index') }}" id="refresh">
+          <button type="submit" name="refresh">refresh</button>
+        </form>
+      </div>
+    
+
+  </div>
+
+
+  <div id="closed">
+    <header class="header1">
+        <h1 id="title2">
+          Zakończone
+        </h1>
+        
+      </header>
+
+
+      {% for obj in complete %}
+        <div class="closed_order">
+          <p>{{obj['side']}}</p>
+          <p>{{obj['price']}}</p>
+          <p>{{obj['pair']}}</p>
+          <p>$ {{obj['size']}}</p>
+          <p>X {{obj['leverage']}}</p>
+          <p>tp {{obj['profit']}}</p>
+          <p>sl {{obj['stop']}}</p>
+          <p>{{obj['comment']}}</p>
+        </div>
+      {% endfor %}
+
+  </div>
+  
+  
+</div>
+
